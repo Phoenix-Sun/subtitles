@@ -46,7 +46,7 @@
         let files = [];
         let results = [];
         let processing = false;
-        let initialized = false; // Worker 初始化旗標
+        let initialized = false;
         let worker = null;
 
         // DOM 元素
@@ -160,19 +160,36 @@
 
         // 更新結果顯示
         function updateResults() {
-            resultsContainer.innerHTML = results.map(result => `
+            resultsContainer.innerHTML = results.map((result, index) => `
                 <div class="bg-white rounded-lg shadow-lg p-6">
-                    <h2 class="text-lg font-semibold">${result.filename}</h2>
-                    <div class="mt-4">
-                        <h3 class="text-sm font-medium text-gray-500">英文辨識結果:</h3>
-                        <p class="bg-gray-50 p-3 rounded">${result.engText || '（無辨識結果）'}</p>
+                    <div class="flex justify-between">
+                        <h2 class="text-lg font-semibold">${result.filename}</h2>
                     </div>
-                    <div class="mt-4">
-                        <h3 class="text-sm font-medium text-gray-500">中文辨識結果:</h3>
-                        <p class="bg-gray-50 p-3 rounded">${result.chiText || '（無辨識結果）'}</p>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">英文辨識結果:</h3>
+                            <p id="eng-${index}" class="bg-gray-50 p-3 rounded whitespace-pre-wrap">${result.engText || '（無辨識結果）'}</p>
+                            <button onclick="copyText('eng-${index}')" class="text-blue-500 hover:text-blue-700 mt-2">複製英文結果</button>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500">中文辨識結果:</h3>
+                            <p id="chi-${index}" class="bg-gray-50 p-3 rounded whitespace-pre-wrap">${result.chiText || '（無辨識結果）'}</p>
+                            <button onclick="copyText('chi-${index}')" class="text-blue-500 hover:text-blue-700 mt-2">複製中文結果</button>
+                        </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        // 複製文字
+        function copyText(id) {
+            const text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('複製成功');
+            }).catch(err => {
+                alert('複製失敗');
+                console.error(err);
+            });
         }
 
         // 事件監聽
