@@ -1,0 +1,5 @@
+flask==3.0.2
+youtube_transcript_api==0.6.2
+yt-dlp==2024.3.10
+pydub==0.25.1
+openai-whisper==20231117 
